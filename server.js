@@ -33,4 +33,3 @@ app.get('/api/tiktok', async (req, res) => {
 app.listen(port, () => {
   console.log(`✅ Serveur TikTok Proxy lancé sur le port ${port}`);
 });
-Correction du port Render

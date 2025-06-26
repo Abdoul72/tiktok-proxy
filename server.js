@@ -3,7 +3,7 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000; // ✅ BON port dynamique pour Render
 
 app.use(cors());
 app.use(express.json());
@@ -22,14 +22,15 @@ app.get('/api/tiktok', async (req, res) => {
     if (data && data.video && data.video.no_watermark) {
       res.json({ download: data.video.no_watermark });
     } else {
-      res.status(404).json({ error: 'Vidéo non trouvée' });
+      res.status(404).json({ error: 'Vidéo non trouvée ou format invalide' });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Erreur serveur' });
+    res.status(500).json({ error: 'Erreur du serveur proxy' });
   }
 });
 
 app.listen(port, () => {
-  console.log(`Serveur TikTok Proxy lancé sur le port ${port}`);
+  console.log(`✅ Serveur TikTok Proxy lancé sur le port ${port}`);
 });
+Correction du port Render

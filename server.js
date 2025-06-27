@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
-const FormData = require('form-data');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -14,34 +13,20 @@ app.get('/api/tiktok', async (req, res) => {
   if (!videoUrl) return res.status(400).json({ error: 'URL manquante' });
 
   try {
-    const form = new FormData();
-    form.append('url', videoUrl);
-    form.append('format', '');
+    const response = await fetch(`https://godownloader.com/api/tiktok-no-watermark-free?url=${encodeURIComponent(videoUrl)}&key=godownloader.com`);
+    const data = await response.json();
 
-    const response = await fetch('https://ttdownloader.com/req/', {
-      method: 'POST',
-      body: form,
-      headers: {
-        'origin': 'https://ttdownloader.com/',
-        'referer': 'https://ttdownloader.com/',
-      }
-    });
-
-    const text = await response.text();
-    const noWatermark = text.match(/<a href="(.*?)"[^>]*>Without Watermark<\/a>/);
-    
-    if (noWatermark && noWatermark[1]) {
-      res.json({ download: noWatermark[1] });
+    if (data && data.download) {
+      res.json({ download: data.download });
     } else {
-      res.status(404).json({ error: 'Impossible de récupérer la vidéo.' });
+      res.status(404).json({ error: 'Impossible de récupérer la vidéo' });
     }
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Erreur interne du serveur proxy.' });
+    res.status(500).json({ error: 'Erreur interne serveur' });
   }
 });
 
 app.listen(port, () => {
-  console.log(`✅ Serveur TikTok Proxy (TTDownloader) en ligne sur le port ${port}`);
+  console.log(`✅ TikTok Proxy (GoDownloader) lancé sur le port ${port}`);
 });
